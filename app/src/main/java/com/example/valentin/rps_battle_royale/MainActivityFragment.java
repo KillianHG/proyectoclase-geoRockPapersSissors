@@ -21,7 +21,6 @@ import java.util.TimeZone;
 public class MainActivityFragment extends Fragment {
 
     String time;
-    TextView timeTV;
     View view;
 
     public MainActivityFragment() {
@@ -53,17 +52,17 @@ public class MainActivityFragment extends Fragment {
             dateformat.setTimeZone(TimeZone.getTimeZone("GMT"));
             System.out.println(date);
             time = (dateformat.format(date));
-            timeTV.setText("Hora actual: " + time);
         }
     }
 
+/*
     @Override
     public void onStart() {
         super.onStart();
-        timeTV = view.findViewById(R.id.timetv);
         TimeStampDataTask task = new TimeStampDataTask();
         task.execute();
     }
+*/
 
 
 }
