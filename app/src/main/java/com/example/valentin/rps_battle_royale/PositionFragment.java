@@ -11,6 +11,12 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.firebase.ui.auth.AuthUI;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.Arrays;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -52,4 +58,5 @@ public class PositionFragment extends Fragment {
 
         return view;
     }
+
 }
