@@ -1,35 +1,27 @@
 {
   "project_info": {
-    "project_number": "696002899007",
-    "firebase_url": "https://rpsnobr.firebaseio.com",
-    "project_id": "rpsnobr",
-    "storage_bucket": "rpsnobr.appspot.com"
+    "project_number": "632809286324",
+    "firebase_url": "https://rpss-79225.firebaseio.com",
+    "project_id": "rpss-79225",
+    "storage_bucket": "rpss-79225.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:696002899007:android:ce27aa73763d41ab",
+        "mobilesdk_app_id": "1:632809286324:android:ce27aa73763d41ab",
         "android_client_info": {
           "package_name": "com.example.valentin.rps_battle_royale"
         }
       },
       "oauth_client": [
         {
-          "client_id": "696002899007-p2s68upsurgsogp0a6pkbb6dirmdefdj.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.valentin.rps_battle_royale",
-            "certificate_hash": "2bcfcc808b3acae8ef5422643d59e9cc4e4ac16a"
-          }
-        },
-        {
-          "client_id": "696002899007-akl7g14bfq0pa2t1bola633d0mh364ve.apps.googleusercontent.com",
+          "client_id": "632809286324-l6d0g9qei43rlti409nte4gj07loe1ui.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDmK-4kLNeRkYty07D_9hJtvexgRVGxFWg"
+          "current_key": "AIzaSyASOB2FEExzAB7LQfNhqwmzaVsglq6flH0"
         }
       ],
       "services": {
@@ -37,13 +29,8 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 2,
-          "other_platform_oauth_client": [
-            {
-              "client_id": "696002899007-akl7g14bfq0pa2t1bola633d0mh364ve.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "status": 1,
+          "other_platform_oauth_client": []
         },
         "ads_service": {
           "status": 2
