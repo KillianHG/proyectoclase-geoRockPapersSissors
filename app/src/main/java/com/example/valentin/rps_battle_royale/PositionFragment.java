@@ -10,10 +10,13 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Arrays;
 
@@ -25,6 +28,7 @@ public class PositionFragment extends Fragment {
     ProgressBar mLoading;
     private Button button;
     private SharedViewModel model;
+    String adress;
 
     public PositionFragment() {
     }
@@ -40,6 +44,37 @@ public class PositionFragment extends Fragment {
         mLoading = view.findViewById(R.id.loading);
 
         model = ViewModelProviders.of(getActivity()).get(SharedViewModel.class);
+
+
+
+
+        model.getCurrentLatLng().observe(this, latlng -> {
+            model.getCurrentAddress().observe(this, address -> {
+                adress = getString(R.string.address_text,
+                        address, System.currentTimeMillis());
+            });
+
+            Jugador jugador = new Jugador();
+            jugador.setLatitud(String.valueOf(latlng.latitude));
+            jugador.setLongitud(String.valueOf(latlng.longitude));
+            jugador.setDireccion(adress);
+
+
+            FirebaseAuth auth = FirebaseAuth.getInstance();
+            DatabaseReference base = FirebaseDatabase.getInstance().getReference();
+
+            if (auth.getUid() != null) {
+                DatabaseReference users = base.child("users");
+                DatabaseReference uid = users.child(auth.getUid());
+
+                DatabaseReference reference = uid.push();
+                reference.setValue(jugador);
+
+                Toast.makeText(getContext(), "Avís donat", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
 
         model.getCurrentAddress().observe(this, address -> {
             mLocationTextView.setText(getString(R.string.address_text,

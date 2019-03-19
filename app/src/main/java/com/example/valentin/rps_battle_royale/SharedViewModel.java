@@ -13,11 +13,13 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,6 +32,8 @@ public class SharedViewModel extends AndroidViewModel {
     private final MutableLiveData<String> checkPermission = new MutableLiveData<>();
     private final MutableLiveData<String> buttonText = new MutableLiveData<>();
     private final MutableLiveData<Boolean> progressBar = new MutableLiveData<>();
+    private final MutableLiveData<LatLng> currentLatLng = new MutableLiveData<>();
+
 
     private boolean mTrackingLocation;
     FusedLocationProviderClient mFusedLocationClient;
@@ -38,6 +42,10 @@ public class SharedViewModel extends AndroidViewModel {
         super(application);
 
         this.app = application;
+    }
+
+    public MutableLiveData<LatLng> getCurrentLatLng() {
+        return currentLatLng;
     }
 
     void setFusedLocationClient(FusedLocationProviderClient mFusedLocationClient) {
@@ -137,9 +145,13 @@ public class SharedViewModel extends AndroidViewModel {
             String resultMessage = "";
 
             try {
+                LatLng latlng = new LatLng(location.getLatitude(), location.getLongitude());
+                currentLatLng.postValue(latlng);
+
                 addresses = geocoder.getFromLocation(
                         location.getLatitude(),
                         location.getLongitude(),
+                        // En aquest cas, sols volem una única adreça:
                         1);
 
                 if (addresses == null || addresses.size() == 0) {
