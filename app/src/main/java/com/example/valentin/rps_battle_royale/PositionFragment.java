@@ -3,6 +3,7 @@ package com.example.valentin.rps_battle_royale;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+import static android.support.constraint.Constraints.TAG;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,6 +34,8 @@ public class PositionFragment extends Fragment {
     private Button button;
     private SharedViewModel model;
     String adress;
+    private DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+
 
     public PositionFragment() {
     }
@@ -64,13 +71,21 @@ public class PositionFragment extends Fragment {
             DatabaseReference base = FirebaseDatabase.getInstance().getReference();
 
             if (auth.getUid() != null) {
-                DatabaseReference users = base.child("users");
-                DatabaseReference uid = users.child(auth.getUid());
 
-                DatabaseReference reference = uid.push();
-                reference.setValue(jugador);
+                Map<String, Object> postValues = jugador.toMap();
+
+                Map<String, Object> childUpdates = new HashMap<>();
+
+                if (postValues.isEmpty()) {
+                    Log.e(TAG, "Aqui no hay ningun dato de M");
+                } else {
+                    Log.i(TAG, "Aqui hay algo!!! Sera un calamar gigante? ===" + postValues);
+                }
 
                 Toast.makeText(getContext(), "Avís donat", Toast.LENGTH_SHORT).show();
+
+                childUpdates.put("/users/" + auth.getUid(), postValues);
+                mDatabase.updateChildren(childUpdates);
             }
         });
 

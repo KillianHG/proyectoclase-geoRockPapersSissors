@@ -1,5 +1,10 @@
 package com.example.valentin.rps_battle_royale;
 
+import com.google.firebase.database.Exclude;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class Jugador {
     String latitud;
     String longitud;
@@ -36,4 +41,14 @@ public class Jugador {
     }
 
     public Jugador() {}
+
+    @Exclude
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("lat", latitud);
+        result.put("long", longitud);
+        result.put("dir", direccion);
+
+        return result;
+    }
 }
