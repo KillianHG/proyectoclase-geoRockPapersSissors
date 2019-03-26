@@ -10,20 +10,25 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 
 import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_LOCATION_PERMISSION = 1;
     FragmentManager fm = getSupportFragmentManager();
+
 
     final Fragment fragment1 = new PositionFragment();
     final Fragment fragment2 = new ListFragment();
@@ -126,17 +131,22 @@ public class MainActivity extends AppCompatActivity {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() == null) {
             // Choose authentication providers
+
             startActivityForResult(
-                    AuthUI.getInstance()
-                            .createSignInIntentBuilder()
-                            .setAvailableProviders(
-                                    Arrays.asList(
-                                            new AuthUI.IdpConfig.EmailBuilder().build(),
-                                            new AuthUI.IdpConfig.GoogleBuilder().build()
-                                    )
-                            )
-                            .build(),
-                    0);
+                AuthUI.getInstance()
+                    .createSignInIntentBuilder()
+                    .setAvailableProviders(
+                        Arrays.asList(
+                            new AuthUI.IdpConfig.EmailBuilder().build(),
+                            new AuthUI.IdpConfig.GoogleBuilder().build()
+                        )
+                    )
+                    .build(),
+            0);
+
         }
+
     }
+
+
 }

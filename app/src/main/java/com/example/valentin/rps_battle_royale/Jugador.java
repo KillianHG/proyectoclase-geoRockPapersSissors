@@ -45,9 +45,9 @@ public class Jugador {
     @Exclude
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
-        result.put("lat", latitud);
-        result.put("long", longitud);
-        result.put("dir", direccion);
+        result.put("latitud", latitud);
+        result.put("longitud", longitud);
+        result.put("direccion", direccion);
 
         return result;
     }

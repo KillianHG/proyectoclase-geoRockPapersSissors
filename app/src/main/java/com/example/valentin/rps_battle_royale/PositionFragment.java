@@ -52,9 +52,6 @@ public class PositionFragment extends Fragment {
 
         model = ViewModelProviders.of(getActivity()).get(SharedViewModel.class);
 
-
-
-
         model.getCurrentLatLng().observe(this, latlng -> {
             model.getCurrentAddress().observe(this, address -> {
                 adress = getString(R.string.address_text,
@@ -65,6 +62,8 @@ public class PositionFragment extends Fragment {
             jugador.setLatitud(String.valueOf(latlng.latitude));
             jugador.setLongitud(String.valueOf(latlng.longitude));
             jugador.setDireccion(adress);
+
+
 
 
             FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -86,6 +85,10 @@ public class PositionFragment extends Fragment {
 
                 childUpdates.put("/users/" + auth.getUid(), postValues);
                 mDatabase.updateChildren(childUpdates);
+            }
+
+            if (auth.getUid() != null) {
+
             }
         });
 

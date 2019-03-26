@@ -54,6 +54,8 @@ public class MainActivityFragment extends Fragment {
             System.out.println(date);
             time = (dateformat.format(date));
         }
+
+
     }
 
 /*
