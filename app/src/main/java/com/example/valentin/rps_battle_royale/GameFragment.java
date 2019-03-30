@@ -8,6 +8,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.lang.reflect.Array;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -15,6 +21,10 @@ import android.widget.Button;
 public class GameFragment extends Fragment {
     Button play_btn;
     boolean jugarPartida = false;
+    String[] usersIds = new String[2];
+
+
+    Partida partida;
 
     Button rock_btn;
     Button paper_btn;
@@ -33,31 +43,83 @@ public class GameFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_game, container, false);
 
         play_btn = view.findViewById(R.id.play_btn);
-
         rock_btn = view.findViewById(R.id.rock_btn);
         paper_btn = view.findViewById(R.id.paper_btn);
         scissors_btn = view.findViewById(R.id.scissors_btn);
 
-        play_btn.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener listener = new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                jugarPartida = true;
+            public void onClick(View view) {
+                switch (view.getId()) {
+                    case R.id.play_btn:
+                        play_btn.setVisibility(View.GONE);
+                        rock_btn.setVisibility(View.VISIBLE);
+                        paper_btn.setVisibility(View.VISIBLE);
+                        scissors_btn.setVisibility(View.VISIBLE);
+                        break;
+                    case R.id.rock_btn:
+                        System.out.println("Rokilla");
+                        partida = new Partida();
+                        partida.setUserid1(usersIds[0]);
+                        partida.setUserid2(usersIds[1]);
+                        partida.setActionid1("r");
+                        partida.setChecked(false);
 
-                play_btn.setVisibility(View.GONE);
-                rock_btn.setVisibility(View.VISIBLE);
-                paper_btn.setVisibility(View.VISIBLE);
-                scissors_btn.setVisibility(View.VISIBLE);
+                        DatabaseReference base = FirebaseDatabase.getInstance(
+                        ).getReference();
 
+                        DatabaseReference users = base.child("partidas");
+
+                        DatabaseReference reference = users.push();
+                        reference.setValue(partida);
+
+                        System.out.println(partida.toString());
+                        break;
+                    case R.id.paper_btn:
+                        System.out.println("Papiro");
+                        partida = new Partida();
+                        partida.setUserid1(usersIds[0]);
+                        partida.setUserid2(usersIds[1]);
+                        partida.setActionid1("p");
+                        partida.setChecked(false);
+
+                        System.out.println(partida.toString());
+                        break;
+                    case R.id.scissors_btn:
+                        System.out.println("Ciencia");
+                        partida = new Partida();
+                        partida.setUserid1(usersIds[0]);
+                        partida.setUserid2(usersIds[1]);
+                        partida.setActionid1("s");
+                        partida.setChecked(false);
+
+                        System.out.println(partida.toString());
+                        break;
+                }
             }
-        });
+        };
 
 
-
+        play_btn.setOnClickListener(listener);
+        rock_btn.setOnClickListener(listener);
+        paper_btn.setOnClickListener(listener);
+        scissors_btn.setOnClickListener(listener);
         return view;
-    }
-
-    public void getUsersId (String meID, String enemyID) {
 
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        usersIds = getArguments().getStringArray("uids");
+        System.out.println(usersIds.toString());
+    }
+
+    public String[] getUsersId(String id1, String id2) {
+        usersIds[0] = id1;
+        usersIds[1] = id2;
+
+        return usersIds;
+    }
 }

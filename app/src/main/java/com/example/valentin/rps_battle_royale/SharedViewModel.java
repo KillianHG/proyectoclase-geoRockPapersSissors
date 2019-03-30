@@ -109,11 +109,11 @@ public class SharedViewModel extends AndroidViewModel {
                     null
             );
 
-            currentAddress.postValue("Carregant...");
+            //currentAddress.postValue("Carregant...");
 
             progressBar.postValue(true);
             mTrackingLocation = true;
-            buttonText.setValue("Aturar el seguiment de la ubicació");
+            buttonText.setValue("Done ya bitch");
         }
     }
 
@@ -123,7 +123,7 @@ public class SharedViewModel extends AndroidViewModel {
             mFusedLocationClient.removeLocationUpdates (mLocationCallback);
             mTrackingLocation = false;
             progressBar.postValue(false);
-            buttonText.setValue("Comença a seguir la ubicació");
+            buttonText.setValue("Find ya bitch");
         }
     }
 

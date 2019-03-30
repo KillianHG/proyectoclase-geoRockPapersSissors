@@ -22,6 +22,7 @@ import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
@@ -74,6 +75,19 @@ public class MapFragment extends Fragment {
             SharedViewModel model = ViewModelProviders.of(getActivity()).get(SharedViewModel.class);
 
             mapFragment.getMapAsync(map -> {
+                try {
+                    // Customize the styling of the base map using a JSON object defined
+                    // in a raw resource file.
+                    boolean success = map.setMapStyle(
+                            MapStyleOptions.loadRawResourceStyle(
+                                    getActivity(), R.raw.map_style));
+
+                    if (!success) {
+                        Log.e(null, "Style parsing failed.");
+                    }
+                } catch (Resources.NotFoundException e) {
+                    Log.e(null, "Can't find style. Error: ", e);
+                }
                 // Codi a executar quan el mapa s'acabi de carregar.
                 map.setMyLocationEnabled(true);
 
@@ -96,11 +110,19 @@ public class MapFragment extends Fragment {
                                     Double.valueOf(jugador.getLongitud())
                             );
 
+                            MarkerAdapter markerAdapter = new MarkerAdapter(
+                                    getActivity()
+                            );
+
+                            float color = 90.0f;
                             Marker marker = map.addMarker(new MarkerOptions().title("JUGAR")
-                                    .snippet(jugador.getDireccion())
+                                    .snippet("Victorias: \n" + "Derrotas: " )
+                                    .icon(BitmapDescriptorFactory.defaultMarker(color))
                                     .position(aux));
                             marker.setTag(dataSnapshot.getKey());
                             markers.put(dataSnapshot.getKey(), marker);
+
+                            map.setInfoWindowAdapter(markerAdapter);
 
                         }
 
@@ -131,13 +153,23 @@ public class MapFragment extends Fragment {
                                 @Override
                                 public void onInfoWindowClick(Marker marker) {
                                     // TODO
-                                    String enemyID = marker.getId();
+                                    String enemyID = marker.getTag().toString();
                                     String myID = auth.getUid();
+
+                                    System.out.println(marker.getTag());
+                                    String[] users = new String[2];
+                                    users[0] = myID;
+                                    users[1] = enemyID;
                                     GameFragment gameFragment = new GameFragment();
 
                                     if (!auth.getUid().equals(marker.getTag())){
                                         Toast.makeText(getContext(), "FUCK YOU!", Toast.LENGTH_SHORT).show();
                                         GameFragment newGamefragment = new GameFragment();
+                                        Bundle args = new Bundle();
+                                        args.putStringArray("uids", users);
+
+                                        newGamefragment.setArguments(args);
+
                                         FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
                                         fragmentTransaction.replace(R.id.selected_fragment, newGamefragment);
                                         fragmentTransaction.addToBackStack(null);

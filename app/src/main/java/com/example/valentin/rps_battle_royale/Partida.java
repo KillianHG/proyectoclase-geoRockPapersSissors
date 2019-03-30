@@ -1,5 +1,4 @@
 package com.example.valentin.rps_battle_royale;
-
 import com.google.firebase.database.Exclude;
 
 import java.util.HashMap;
@@ -7,93 +6,84 @@ import java.util.Map;
 
 public class Partida {
 
-    String hora;
-    boolean challanged;
-    String challengerID;
-    String challengedID;
-    String paper;
-    String scissor;
-    String rock;
 
-    public Partida(String hora, boolean challanged, boolean challenger, String challengerID, String challengedID, String paper, String scissor, String rock) {
-        this.hora = hora;
-        this.challanged = challanged;
-        this.challengerID = challengerID;
-        this.challengedID = challengedID;
-        this.paper = paper;
-        this.scissor = scissor;
-        this.rock = rock;
+    String userid1;
+    String userid2;
+    String actionid1;
+    String actionid2;
+    boolean checked;
+
+    public Partida(String userid1, String userid2, String actionid1, String actionid2, boolean checked) {
+        this.userid1 = userid1;
+        this.userid2 = userid2;
+        this.actionid1 = actionid1;
+        this.actionid2 = actionid2;
+        this.checked = checked;
     }
 
-    public String getHora() {
-        return hora;
+    public String getUserid1() {
+        return userid1;
     }
 
-    public void setHora(String hora) {
-        this.hora = hora;
+    public void setUserid1(String userid1) {
+        this.userid1 = userid1;
     }
 
-    public boolean isChallanged() {
-        return challanged;
+    public String getUserid2() {
+        return userid2;
     }
 
-    public void setChallanged(boolean challanged) {
-        this.challanged = challanged;
+    public void setUserid2(String userid2) {
+        this.userid2 = userid2;
     }
 
-    public String getChallengerID() {
-        return challengerID;
+    public String getActionid1() {
+        return actionid1;
     }
 
-    public void setChallengerID(String challengerID) {
-        this.challengerID = challengerID;
+    public void setActionid1(String actionid1) {
+        this.actionid1 = actionid1;
     }
 
-    public String getChallengedID() {
-        return challengedID;
+    public String getActionid2() {
+        return actionid2;
     }
 
-    public void setChallengedID(String challengedID) {
-        this.challengedID = challengedID;
+    public void setActionid2(String actionid2) {
+        this.actionid2 = actionid2;
     }
 
-    public String getPaper() {
-        return paper;
+    public boolean isChecked() {
+        return checked;
     }
 
-    public void setPaper(String paper) {
-        this.paper = paper;
+    public void setChecked(boolean checked) {
+        this.checked = checked;
     }
 
-    public String getScissor() {
-        return scissor;
+    public Partida() {
     }
-
-    public void setScissor(String scissor) {
-        this.scissor = scissor;
-    }
-
-    public String getRock() {
-        return rock;
-    }
-
-    public void setRock(String rock) {
-        this.rock = rock;
-    }
-
-    public Partida () {}
 
     @Exclude
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
-        result.put("hora", hora);
-        result.put("challanged", challanged);
-        result.put("challangedID", challengedID);
-        result.put("challangerID", challengerID);
-        result.put("paper", paper);
-        result.put("rock", rock);
-        result.put("scissors", scissor);
+        result.put("userid1", userid1);
+        result.put("userid2", userid2);
+        result.put("actionid1", actionid1);
+        result.put("actionid2", actionid2);
+        result.put("checked", checked);
 
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Partida{" +
+                "userid1='" + userid1 + '\'' +
+                ", userid2='" + userid2 + '\'' +
+                ", actionid1='" + actionid1 + '\'' +
+                ", actionid2='" + actionid2 + '\'' +
+                ", checked=" + checked +
+                '}';
     }
 }
