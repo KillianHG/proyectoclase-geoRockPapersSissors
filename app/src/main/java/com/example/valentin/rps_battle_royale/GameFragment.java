@@ -58,47 +58,23 @@ public class GameFragment extends Fragment {
                         scissors_btn.setVisibility(View.VISIBLE);
                         break;
                     case R.id.rock_btn:
-                        System.out.println("Rokilla");
-                        partida = new Partida();
-                        partida.setUserid1(usersIds[0]);
-                        partida.setUserid2(usersIds[1]);
-                        partida.setActionid1("r");
-                        partida.setChecked(false);
-
-                        DatabaseReference base = FirebaseDatabase.getInstance(
-                        ).getReference();
-
-                        DatabaseReference users = base.child("partidas");
-
-                        DatabaseReference reference = users.push();
-                        reference.setValue(partida);
-
-                        System.out.println(partida.toString());
+                        partida = new Partida(usersIds[0],usersIds[1],"r", null, false);
+                        matchPush(partida);
+                        getFragmentManager().popBackStackImmediate();
                         break;
                     case R.id.paper_btn:
-                        System.out.println("Papiro");
-                        partida = new Partida();
-                        partida.setUserid1(usersIds[0]);
-                        partida.setUserid2(usersIds[1]);
-                        partida.setActionid1("p");
-                        partida.setChecked(false);
-
-                        System.out.println(partida.toString());
+                        partida = new Partida(usersIds[0],usersIds[1],"p", null, false);
+                        matchPush(partida);
+                        getFragmentManager().popBackStackImmediate();
                         break;
                     case R.id.scissors_btn:
-                        System.out.println("Ciencia");
-                        partida = new Partida();
-                        partida.setUserid1(usersIds[0]);
-                        partida.setUserid2(usersIds[1]);
-                        partida.setActionid1("s");
-                        partida.setChecked(false);
-
-                        System.out.println(partida.toString());
+                        partida = new Partida(usersIds[0],usersIds[1],"s", null, false);
+                        matchPush(partida);
+                        getFragmentManager().popBackStackImmediate();
                         break;
                 }
             }
         };
-
 
         play_btn.setOnClickListener(listener);
         rock_btn.setOnClickListener(listener);
@@ -107,6 +83,8 @@ public class GameFragment extends Fragment {
         return view;
 
     }
+
+
 
     @Override
     public void onStart() {
@@ -121,5 +99,15 @@ public class GameFragment extends Fragment {
         usersIds[1] = id2;
 
         return usersIds;
+    }
+
+    public void matchPush(Partida partida) {
+        DatabaseReference base = FirebaseDatabase.getInstance(
+        ).getReference();
+
+        DatabaseReference users = base.child("partidas");
+
+        DatabaseReference reference = users.push();
+        reference.setValue(partida);
     }
 }
