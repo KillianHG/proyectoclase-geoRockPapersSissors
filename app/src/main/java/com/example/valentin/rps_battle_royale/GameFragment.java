@@ -3,16 +3,22 @@ package com.example.valentin.rps_battle_royale;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.lang.reflect.Array;
+import java.util.HashMap;
+import java.util.Map;
+
+import static android.support.constraint.Constraints.TAG;
 
 
 /**
@@ -22,7 +28,7 @@ public class GameFragment extends Fragment {
     Button play_btn;
     boolean reto;
     String[] usersIds = new String[2];
-    String[] partidaArr = new String[3];
+    String[] partidaArr = new String[4];
 
 
     Partida partida;
@@ -62,11 +68,13 @@ public class GameFragment extends Fragment {
                     case R.id.rock_btn:
                         if (reto){
                             partida = new Partida(usersIds[0],usersIds[1],"r", null, false);
+                            matchPush(partida);
                         }else {
                             partida = new Partida(partidaArr[0],partidaArr[1],partidaArr[2], "r", false);
+                            matchUpdate(partida);
                         }
-                        System.out.println(partida.toString());
-                        matchPush(partida);
+                        System.out.println("000000000000000000000000"+partida.toString());
+
                         getFragmentManager().popBackStackImmediate();
                         break;
                     case R.id.paper_btn:
@@ -98,12 +106,12 @@ public class GameFragment extends Fragment {
 
         if (getArguments().getStringArray("partida") != null) {
             reto = false;
-            usersIds = getArguments().getStringArray("partida");
-            System.out.println(usersIds.toString());
+            partidaArr = getArguments().getStringArray("partida");
+            System.out.println(partidaArr.toString());
         }
         else if (getArguments().getStringArray("uids") != null) {
             reto = true;
-            partidaArr = getArguments().getStringArray("uids");
+            usersIds = getArguments().getStringArray("uids");
             System.out.println(partidaArr.toString());
         }
     }
@@ -131,5 +139,25 @@ public class GameFragment extends Fragment {
 
         DatabaseReference reference = users.push();
         reference.setValue(partida);
+    }
+
+    public void matchUpdate(Partida partida) {
+
+            DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+
+            Map<String, Object> postValues = partida.toMap();
+
+            Map<String, Object> childUpdates = new HashMap<>();
+
+            if (postValues.isEmpty()) {
+                Log.e(TAG, "Aqui no hay ningun dato de M");
+            } else {
+                Log.i(TAG, "Aqui hay algo!!! Sera un RABO gigante? ___" + postValues);
+            }
+
+            Toast.makeText(getContext(), "RESPONDIDO", Toast.LENGTH_SHORT).show();
+
+            childUpdates.put("/partidas/" + partidaArr[3], postValues);
+            mDatabase.updateChildren(childUpdates);
     }
 }

@@ -143,17 +143,18 @@ public class PositionFragment extends Fragment {
                         Partida partida = dataSnapshot.getValue(Partida.class);
 
                         System.out.println("-----------------"+partida.toString());
-                        String[] users = new String[2];
+                        /*String[] users = new String[2];
                         users[0] = partida.getUserid1();
-                        users[1] = auth.getUid();
-
-                        String[] partidaArr = new String[3];
-                        partidaArr[0] = partida.getUserid1();
-                        partidaArr[1] = partida.getUserid2();
-                        partidaArr[2] = partida.getActionid1();
+                        users[1] = auth.getUid();*/
 
                         if (partida.getUserid2().equals(auth.getUid()) && partida.getActionid2() == null){
                             System.out.println("-----PENE DE 299 ES PEQUEÑO QUE FLIPAS-----");
+
+                            String[] partidaArr = new String[4];
+                            partidaArr[0] = partida.getUserid1();
+                            partidaArr[1] = partida.getUserid2();
+                            partidaArr[2] = partida.getActionid1();
+                            partidaArr[3] = dataSnapshot.getKey();
 
                             GameFragment newGamefragment = new GameFragment();
                             Bundle args = new Bundle();
