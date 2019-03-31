@@ -20,8 +20,9 @@ import java.lang.reflect.Array;
  */
 public class GameFragment extends Fragment {
     Button play_btn;
-    boolean jugarPartida = false;
+    boolean reto;
     String[] usersIds = new String[2];
+    String[] partidaArr = new String[3];
 
 
     Partida partida;
@@ -47,6 +48,7 @@ public class GameFragment extends Fragment {
         paper_btn = view.findViewById(R.id.paper_btn);
         scissors_btn = view.findViewById(R.id.scissors_btn);
 
+        //TODO ============================================================!!!!!!!!!!!!!!
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -58,7 +60,12 @@ public class GameFragment extends Fragment {
                         scissors_btn.setVisibility(View.VISIBLE);
                         break;
                     case R.id.rock_btn:
-                        partida = new Partida(usersIds[0],usersIds[1],"r", null, false);
+                        if (reto){
+                            partida = new Partida(usersIds[0],usersIds[1],"r", null, false);
+                        }else {
+                            partida = new Partida(partidaArr[0],partidaArr[1],partidaArr[2], "r", false);
+                        }
+                        System.out.println(partida.toString());
                         matchPush(partida);
                         getFragmentManager().popBackStackImmediate();
                         break;
@@ -84,15 +91,30 @@ public class GameFragment extends Fragment {
 
     }
 
-
-
+    //TODO ================================================!!!!!!!!!!!!!!!
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (getArguments().getStringArray("partida") != null) {
+            reto = false;
+            usersIds = getArguments().getStringArray("partida");
+            System.out.println(usersIds.toString());
+        }
+        else if (getArguments().getStringArray("uids") != null) {
+            reto = true;
+            partidaArr = getArguments().getStringArray("uids");
+            System.out.println(partidaArr.toString());
+        }
+    }
+
+    /*@Override
     public void onStart() {
         super.onStart();
 
         usersIds = getArguments().getStringArray("uids");
         System.out.println(usersIds.toString());
-    }
+    }*/
 
     public String[] getUsersId(String id1, String id2) {
         usersIds[0] = id1;

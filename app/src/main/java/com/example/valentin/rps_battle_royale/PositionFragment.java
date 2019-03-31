@@ -134,6 +134,7 @@ public class PositionFragment extends Fragment {
             DatabaseReference partidas = base.child("partidas");
             System.out.println(".......: " + partidas.toString());
 
+            //TODO: ===========================================!!!!!!!!!!!!!!!!
             SharedViewModel model = ViewModelProviders.of(getActivity()).get(SharedViewModel.class);
             try {
                 partidas.addChildEventListener(new ChildEventListener() {
@@ -142,6 +143,30 @@ public class PositionFragment extends Fragment {
                         Partida partida = dataSnapshot.getValue(Partida.class);
 
                         System.out.println("-----------------"+partida.toString());
+                        String[] users = new String[2];
+                        users[0] = partida.getUserid1();
+                        users[1] = auth.getUid();
+
+                        String[] partidaArr = new String[3];
+                        partidaArr[0] = partida.getUserid1();
+                        partidaArr[1] = partida.getUserid2();
+                        partidaArr[2] = partida.getActionid1();
+
+                        if (partida.getUserid2().equals(auth.getUid()) && partida.getActionid2() == null){
+                            System.out.println("-----PENE DE 299 ES PEQUEÑO QUE FLIPAS-----");
+
+                            GameFragment newGamefragment = new GameFragment();
+                            Bundle args = new Bundle();
+                            args.putStringArray("partida", partidaArr);
+
+                            newGamefragment.setArguments(args);
+
+                            FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+                            fragmentTransaction.replace(R.id.selected_fragment, newGamefragment);
+                            fragmentTransaction.addToBackStack(null);
+                            fragmentTransaction.commit();
+
+                        }
                     }
 
                     @Override
