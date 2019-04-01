@@ -1,6 +1,9 @@
 package com.example.valentin.rps_battle_royale;
 
 
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -15,8 +18,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.lang.reflect.Array;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimeZone;
 
 import static android.support.constraint.Constraints.TAG;
 
@@ -29,13 +35,17 @@ public class GameFragment extends Fragment {
     boolean reto;
     String[] usersIds = new String[2];
     String[] partidaArr = new String[4];
-
+    String time;
+    PartidaDB partidaDB = new PartidaDB();
+    String gameResult;
 
     Partida partida;
 
     Button rock_btn;
     Button paper_btn;
     Button scissors_btn;
+
+    private SharedViewModel model;
 
 
     public GameFragment() {
@@ -53,6 +63,8 @@ public class GameFragment extends Fragment {
         rock_btn = view.findViewById(R.id.rock_btn);
         paper_btn = view.findViewById(R.id.paper_btn);
         scissors_btn = view.findViewById(R.id.scissors_btn);
+
+        model = ViewModelProviders.of(this).get(SharedViewModel.class);
 
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
@@ -78,9 +90,13 @@ public class GameFragment extends Fragment {
                         if (reto) {
                             partida = new Partida(usersIds[0], usersIds[1], "p", null, false);
                             matchPush(partida);
+                            TimeStampDataTask task = new TimeStampDataTask();
+                            task.execute();
                         } else {
                             partida = new Partida(partidaArr[0], partidaArr[1], partidaArr[2], "p", false);
                             matchUpdate(partida);
+                            TimeStampDataTask task = new TimeStampDataTask();
+                            task.execute();
                         }
                         getFragmentManager().popBackStackImmediate();
                         break;
@@ -91,6 +107,8 @@ public class GameFragment extends Fragment {
                         } else {
                             partida = new Partida(partidaArr[0], partidaArr[1], partidaArr[2], "s", false);
                             matchUpdate(partida);
+                            TimeStampDataTask task = new TimeStampDataTask();
+                            task.execute();
                         }
                         getFragmentManager().popBackStackImmediate();
                         break;
@@ -160,18 +178,49 @@ public class GameFragment extends Fragment {
             Log.i(TAG, "Aqui hay algo!!! Sera un RABO gigante? ___" + postValues);
         }
         int res = partida.checkWin();
-        String result;
         if (res == 1) {
-            result = "DERROTA";
+            gameResult = "DERROTA";
         } else if (res == 2) {
-            result = "VICTORIA";
+            gameResult = "VICTORIA";
         } else {
-            result = "EMPATE";
+            gameResult = "EMPATE";
         }
 
-        Toast.makeText(getContext(), result, Toast.LENGTH_LONG).show();
+        Toast.makeText(getContext(), gameResult, Toast.LENGTH_LONG).show();
 
         childUpdates.put("/partidas/" + partidaArr[3], postValues);
         mDatabase.updateChildren(childUpdates);
+    }
+
+    private class TimeStampDataTask extends AsyncTask<Void, Void, String> {
+        @Override
+        protected String doInBackground(Void... voids) {
+            String result;
+            TimeZoneApi api = new TimeZoneApi();
+            result = api.getTimeZone();
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            Date date = new Date(Long.parseLong(result) * 1000L);
+            SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm");
+            dateformat.setTimeZone(TimeZone.getTimeZone("GMT"));
+            System.out.println(date);
+            time = (dateformat.format(date));
+
+            partidaDB.setUser(partida.getUserid2());
+            partidaDB.setOpponent(partida.getUserid1());
+            partidaDB.setUserAction(partida.getActionid2());
+            partidaDB.setOpponentAction(partida.getActionid1());
+            partidaDB.setHora(time);
+            partidaDB.setResult(gameResult);
+
+            System.out.println("-----------INTRODUSIENDO----------");
+            model.addPartida(partidaDB);
+        }
+
+
     }
 }

@@ -101,8 +101,6 @@ public class PositionFragment extends Fragment {
                     Log.i(TAG, "Aqui hay algo!!! Sera un calamar gigante? ===" + postValues);
                 }
 
-                Toast.makeText(getContext(), "Avís donat", Toast.LENGTH_SHORT).show();
-
                 childUpdates.put("/users/" + auth.getUid(), postValues);
                 mDatabase.updateChildren(childUpdates);
             }
@@ -125,8 +123,7 @@ public class PositionFragment extends Fragment {
                 mLoading.setVisibility(ProgressBar.INVISIBLE);
         });
 
-        button.setOnClickListener((View clickedView) -> model.switchTrackingLocation());
-
+        //button.setOnClickListener((View clickedView) -> model.switchTrackingLocation());
 
 
         FirebaseAuth auth = FirebaseAuth.getInstance();

@@ -33,6 +33,9 @@ public class SharedViewModel extends AndroidViewModel {
     private final MutableLiveData<String> buttonText = new MutableLiveData<>();
     private final MutableLiveData<Boolean> progressBar = new MutableLiveData<>();
     private final MutableLiveData<LatLng> currentLatLng = new MutableLiveData<>();
+    private final AppDatabase appDatabase;
+    private final PartidaDBDao partidaDBDao;
+    //private final LiveData<List<PartidaDB>> partidas;
 
 
     private boolean mTrackingLocation;
@@ -42,9 +45,47 @@ public class SharedViewModel extends AndroidViewModel {
         super(application);
 
         this.app = application;
+        this.appDatabase = AppDatabase.getDatabase(
+                this.getApplication()
+        );
+        this.partidaDBDao = appDatabase.getPartidaDao();
+
     }
 
-    public MutableLiveData<LatLng> getCurrentLatLng() {
+    public LiveData<List<PartidaDB>> getPartidas() {
+        return partidaDBDao.getPartida();
+    }
+
+
+    public void addPartida(PartidaDB partidaDB) {
+        AddPartidaDataTask task = new AddPartidaDataTask(partidaDB);
+        task.execute();
+    }
+
+    private class AddPartidaDataTask extends AsyncTask<Void, Void, PartidaDB> {
+        private PartidaDB p;
+        public AddPartidaDataTask(PartidaDB partida)
+        {
+            p = partida;
+        }
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+
+        @Override
+        protected PartidaDB doInBackground(Void... voids) {
+
+            partidaDBDao.addPartida(p);
+            return p;
+        }
+    }
+
+
+
+
+        public MutableLiveData<LatLng> getCurrentLatLng() {
         return currentLatLng;
     }
 

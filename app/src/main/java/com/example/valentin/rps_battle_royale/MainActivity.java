@@ -92,15 +92,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void checkPermission() {
-        if (ActivityCompat.checkSelfPermission(
-                this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]
-                            {Manifest.permission.ACCESS_FINE_LOCATION},
-                    REQUEST_LOCATION_PERMISSION);
-        } else {
-            model.startTrackingLocation(false);
+        try {
+            if (ActivityCompat.checkSelfPermission(
+                    this, Manifest.permission.ACCESS_FINE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]
+                                {Manifest.permission.ACCESS_FINE_LOCATION},
+                        REQUEST_LOCATION_PERMISSION);
+            } else {
+                model.startTrackingLocation(false);
+            }
         }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override

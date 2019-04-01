@@ -11,19 +11,19 @@ import java.util.List;
 
 @Dao
 public interface PartidaDBDao {
-    @Query("select * from PartidaDB")
+   @Query("select * from PartidaDB")
     LiveData<List<PartidaDB>> getPartida();
 
     @Insert
-    void addHistory(PartidaDB partida);
+    void addPartida(PartidaDB partida);
 
     @Insert
-    void addHistorys(List<PartidaDB> partida);
+    void addPartidas(List<PartidaDB> partida);
 
     @Delete
-    void deleteHistory(PartidaDB partida);
+    void deletePartida(PartidaDB partida);
 
-    @Query("DELETE FROM PartidaDB")
-    void deleteHistory();
+   @Query("DELETE FROM PartidaDB")
+    void deletePastidas();
 }
 

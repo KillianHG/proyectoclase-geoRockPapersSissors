@@ -5,6 +5,7 @@ import android.arch.persistence.room.PrimaryKey;
 
 import java.io.Serializable;
 
+@Entity
 public class PartidaDB implements Serializable {
 
     String user;
@@ -12,6 +13,7 @@ public class PartidaDB implements Serializable {
     String userAction;
     String opponentAction;
     String result;
+    String hora;
     @PrimaryKey(autoGenerate = true)
     private int id;
 
@@ -61,5 +63,16 @@ public class PartidaDB implements Serializable {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getHora() {
+        return hora;
+    }
+
+    public void setHora(String hora) {
+        this.hora = hora;
+    }
+
+    public PartidaDB() {
     }
 }
