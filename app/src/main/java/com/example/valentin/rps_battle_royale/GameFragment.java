@@ -54,7 +54,6 @@ public class GameFragment extends Fragment {
         paper_btn = view.findViewById(R.id.paper_btn);
         scissors_btn = view.findViewById(R.id.scissors_btn);
 
-        //TODO ============================================================!!!!!!!!!!!!!!
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -66,25 +65,33 @@ public class GameFragment extends Fragment {
                         scissors_btn.setVisibility(View.VISIBLE);
                         break;
                     case R.id.rock_btn:
-                        if (reto){
-                            partida = new Partida(usersIds[0],usersIds[1],"r", null, false);
+                        if (reto) {
+                            partida = new Partida(usersIds[0], usersIds[1], "r", null, false);
                             matchPush(partida);
-                        }else {
-                            partida = new Partida(partidaArr[0],partidaArr[1],partidaArr[2], "r", false);
+                        } else {
+                            partida = new Partida(partidaArr[0], partidaArr[1], partidaArr[2], "r", false);
                             matchUpdate(partida);
                         }
-                        System.out.println("000000000000000000000000"+partida.toString());
-
                         getFragmentManager().popBackStackImmediate();
                         break;
                     case R.id.paper_btn:
-                        partida = new Partida(usersIds[0],usersIds[1],"p", null, false);
-                        matchPush(partida);
+                        if (reto) {
+                            partida = new Partida(usersIds[0], usersIds[1], "p", null, false);
+                            matchPush(partida);
+                        } else {
+                            partida = new Partida(partidaArr[0], partidaArr[1], partidaArr[2], "p", false);
+                            matchUpdate(partida);
+                        }
                         getFragmentManager().popBackStackImmediate();
                         break;
                     case R.id.scissors_btn:
-                        partida = new Partida(usersIds[0],usersIds[1],"s", null, false);
-                        matchPush(partida);
+                        if (reto) {
+                            partida = new Partida(usersIds[0], usersIds[1], "s", null, false);
+                            matchPush(partida);
+                        } else {
+                            partida = new Partida(partidaArr[0], partidaArr[1], partidaArr[2], "s", false);
+                            matchUpdate(partida);
+                        }
                         getFragmentManager().popBackStackImmediate();
                         break;
                 }
@@ -99,7 +106,6 @@ public class GameFragment extends Fragment {
 
     }
 
-    //TODO ================================================!!!!!!!!!!!!!!!
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,8 +114,7 @@ public class GameFragment extends Fragment {
             reto = false;
             partidaArr = getArguments().getStringArray("partida");
             System.out.println(partidaArr.toString());
-        }
-        else if (getArguments().getStringArray("uids") != null) {
+        } else if (getArguments().getStringArray("uids") != null) {
             reto = true;
             usersIds = getArguments().getStringArray("uids");
             System.out.println(partidaArr.toString());
@@ -143,21 +148,30 @@ public class GameFragment extends Fragment {
 
     public void matchUpdate(Partida partida) {
 
-            DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
 
-            Map<String, Object> postValues = partida.toMap();
+        Map<String, Object> postValues = partida.toMap();
 
-            Map<String, Object> childUpdates = new HashMap<>();
+        Map<String, Object> childUpdates = new HashMap<>();
 
-            if (postValues.isEmpty()) {
-                Log.e(TAG, "Aqui no hay ningun dato de M");
-            } else {
-                Log.i(TAG, "Aqui hay algo!!! Sera un RABO gigante? ___" + postValues);
-            }
+        if (postValues.isEmpty()) {
+            Log.e(TAG, "Aqui no hay ningun dato de M");
+        } else {
+            Log.i(TAG, "Aqui hay algo!!! Sera un RABO gigante? ___" + postValues);
+        }
+        int res = partida.checkWin();
+        String result;
+        if (res == 1) {
+            result = "DERROTA";
+        } else if (res == 2) {
+            result = "VICTORIA";
+        } else {
+            result = "EMPATE";
+        }
 
-            Toast.makeText(getContext(), "RESPONDIDO", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), result, Toast.LENGTH_LONG).show();
 
-            childUpdates.put("/partidas/" + partidaArr[3], postValues);
-            mDatabase.updateChildren(childUpdates);
+        childUpdates.put("/partidas/" + partidaArr[3], postValues);
+        mDatabase.updateChildren(childUpdates);
     }
 }

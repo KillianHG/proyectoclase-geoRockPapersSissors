@@ -86,4 +86,28 @@ public class Partida {
                 ", checked=" + checked +
                 '}';
     }
+
+    //si jugador1 gana - 1 | si jugador2 gana - 2 | si hay empate - 0
+    public int checkWin() {
+        if ( (actionid1.equals( "r" )) && (this.actionid2.equals( "s" )) ) {
+            return 1;
+        }
+        if ( (actionid1.equals( "r" )) && (this.actionid2.equals( "r" )) ) {
+            return 0;
+        }
+        if ( (actionid1.equals( "s")) && (actionid2.equals( "p" )) ) {
+            return 1;
+        }
+        if ( (actionid1.equals( "s")) && (actionid2.equals( "s" )) ) {
+            return 0;
+        }
+        if ( (actionid1.equals( "p" )) && (actionid2.equals( "r" )) ) {
+            return 1;
+        }
+        if ( (actionid1.equals( "p" )) && (actionid2.equals( "p" )) ) {
+            return 0;
+        }
+
+        return 2;
+    }
 }

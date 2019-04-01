@@ -9,7 +9,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.text.SpannableStringBuilder;
+import android.text.style.RelativeSizeSpan;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +39,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.sql.SQLOutput;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -108,7 +112,6 @@ public class PositionFragment extends Fragment {
             }
         });
 
-
         model.getCurrentAddress().observe(this, address -> {
             mLocationTextView.setText(getString(R.string.address_text,
                     address, System.currentTimeMillis()));
@@ -134,7 +137,6 @@ public class PositionFragment extends Fragment {
             DatabaseReference partidas = base.child("partidas");
             System.out.println(".......: " + partidas.toString());
 
-            //TODO: ===========================================!!!!!!!!!!!!!!!!
             SharedViewModel model = ViewModelProviders.of(getActivity()).get(SharedViewModel.class);
             try {
                 partidas.addChildEventListener(new ChildEventListener() {
@@ -147,7 +149,7 @@ public class PositionFragment extends Fragment {
                         users[0] = partida.getUserid1();
                         users[1] = auth.getUid();*/
 
-                        if (partida.getUserid2().equals(auth.getUid()) && partida.getActionid2() == null){
+                        if (partida.getUserid2().equals(auth.getUid()) && partida.getActionid2() == null) {
                             System.out.println("-----PENE DE 299 ES PEQUEÑO QUE FLIPAS-----");
 
                             String[] partidaArr = new String[4];
@@ -167,6 +169,34 @@ public class PositionFragment extends Fragment {
                             fragmentTransaction.addToBackStack(null);
                             fragmentTransaction.commit();
 
+                        } else if (partida.getUserid1().equals(auth.getUid()) && partida.getActionid2()!= null && !partida.isChecked()) {
+                            int res = partida.checkWin();
+                            String result;
+                            if (res == 1)  {
+                                result = "VICTORIA" ;
+                            } else if (res == 2)  {
+                                result = "DERROTA" ;
+                            } else {
+                                result = "EMPATE" ;
+                            }
+                            System.out.println(result);
+                            partida.setChecked(true);
+                            DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+
+                            Map<String, Object> postValues = partida.toMap();
+
+                            Map<String, Object> childUpdates = new HashMap<>();
+
+                            if (postValues.isEmpty()) {
+                                Log.e(TAG, "Aqui no hay ningun dato de M");
+                            } else {
+                                Log.i(TAG, "Aqui hay algo!!! Sera un RABO gigante? ___" + postValues);
+                            }
+
+                            Toast.makeText(getContext(), result, Toast.LENGTH_LONG).show();
+
+                            childUpdates.put("/partidas/" + dataSnapshot.getKey(), postValues);
+                            mDatabase.updateChildren(childUpdates);
                         }
                     }
 
@@ -174,7 +204,35 @@ public class PositionFragment extends Fragment {
                     public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                         Partida partida = dataSnapshot.getValue(Partida.class);
 
-                        System.out.println("-----------------"+partida.toString());
+                        if (partida.getUserid1().equals(auth.getUid()) && !partida.isChecked()) {
+                            int res = partida.checkWin();
+                            String result;
+                            if (res == 1)  {
+                                result = "VICTORIA" ;
+                            } else if (res == 2)  {
+                                result = "DERROTA" ;
+                            } else {
+                                result = "EMPATE" ;
+                            }
+                            System.out.println(result);
+                            partida.setChecked(true);
+                            DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+
+                            Map<String, Object> postValues = partida.toMap();
+
+                            Map<String, Object> childUpdates = new HashMap<>();
+
+                            if (postValues.isEmpty()) {
+                                Log.e(TAG, "Aqui no hay ningun dato de M");
+                            } else {
+                                Log.i(TAG, "Aqui hay algo!!! Sera un RABO gigante? ___" + postValues);
+                            }
+
+                            Toast.makeText(getContext(), result, Toast.LENGTH_LONG).show();
+
+                            childUpdates.put("/partidas/" + dataSnapshot.getKey(), postValues);
+                            mDatabase.updateChildren(childUpdates);
+                        }
                     }
 
                     @Override
