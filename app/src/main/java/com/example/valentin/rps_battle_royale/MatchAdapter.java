@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
-public class MatchAdapter extends ArrayAdapter <PartidaDB>{
+public class MatchAdapter extends ArrayAdapter<PartidaDB> {
 
     public MatchAdapter(Context context, int resource, List<PartidaDB> objects) {
         super(context, resource, objects);
@@ -44,14 +44,16 @@ public class MatchAdapter extends ArrayAdapter <PartidaDB>{
         resultadotv.setText(partidaDB.getResult());
         tutv.setText(partidaDB.getUser());
         oponentetv.setText(partidaDB.getOpponent());
-        if(partidaDB.getResult().equals("VICTORIA")) {
-            convertView.setBackgroundColor(Color.parseColor("#98C9A3"));
-        }
-        else if(partidaDB.getResult().equals("DERROTA")) {
-            convertView.setBackgroundColor(Color.parseColor("#E8A0A0"));
-        }
-        else if(partidaDB.getResult().equals("EMPATE")) {
-            convertView.setBackgroundColor(Color.parseColor("#D6D8D6"));
+        try {
+            if (partidaDB.getResult().equals("VICTORIA")) {
+                convertView.setBackgroundColor(Color.parseColor("#98C9A3"));
+            } else if (partidaDB.getResult().equals("DERROTA")) {
+                convertView.setBackgroundColor(Color.parseColor("#E8A0A0"));
+            } else if (partidaDB.getResult().equals("EMPATE")) {
+                convertView.setBackgroundColor(Color.parseColor("#D6D8D6"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         // Retornem la View replena per a mostrar-la

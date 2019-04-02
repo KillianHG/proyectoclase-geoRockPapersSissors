@@ -83,6 +83,8 @@ public class GameFragment extends Fragment {
                         } else {
                             partida = new Partida(partidaArr[0], partidaArr[1], partidaArr[2], "r", false);
                             matchUpdate(partida);
+                            TimeStampDataTask task = new TimeStampDataTask();
+                            task.execute();
                         }
                         getFragmentManager().popBackStackImmediate();
                         break;
@@ -90,8 +92,6 @@ public class GameFragment extends Fragment {
                         if (reto) {
                             partida = new Partida(usersIds[0], usersIds[1], "p", null, false);
                             matchPush(partida);
-                            TimeStampDataTask task = new TimeStampDataTask();
-                            task.execute();
                         } else {
                             partida = new Partida(partidaArr[0], partidaArr[1], partidaArr[2], "p", false);
                             matchUpdate(partida);
@@ -115,7 +115,6 @@ public class GameFragment extends Fragment {
                 }
             }
         };
-
         play_btn.setOnClickListener(listener);
         rock_btn.setOnClickListener(listener);
         paper_btn.setOnClickListener(listener);
@@ -138,14 +137,6 @@ public class GameFragment extends Fragment {
             System.out.println(partidaArr.toString());
         }
     }
-
-    /*@Override
-    public void onStart() {
-        super.onStart();
-
-        usersIds = getArguments().getStringArray("uids");
-        System.out.println(usersIds.toString());
-    }*/
 
     public String[] getUsersId(String id1, String id2) {
         usersIds[0] = id1;
@@ -186,10 +177,10 @@ public class GameFragment extends Fragment {
             gameResult = "EMPATE";
         }
 
-        Toast.makeText(getContext(), gameResult, Toast.LENGTH_LONG).show();
-
         childUpdates.put("/partidas/" + partidaArr[3], postValues);
         mDatabase.updateChildren(childUpdates);
+
+        Toast.makeText(getContext(), gameResult, Toast.LENGTH_LONG).show();
     }
 
     private class TimeStampDataTask extends AsyncTask<Void, Void, String> {
@@ -220,7 +211,5 @@ public class GameFragment extends Fragment {
             System.out.println("-----------INTRODUSIENDO----------");
             model.addPartida(partidaDB);
         }
-
-
     }
 }

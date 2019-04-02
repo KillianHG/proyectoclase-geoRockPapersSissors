@@ -4,6 +4,7 @@ package com.example.valentin.rps_battle_royale;
 import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.res.Resources;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -40,9 +41,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.sql.SQLOutput;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimeZone;
 
 import static android.support.constraint.Constraints.TAG;
 
@@ -56,6 +60,10 @@ public class PositionFragment extends Fragment {
     private Button logout;
     private SharedViewModel model;
     String adress;
+    private Partida partida;
+    private PartidaDB partidaDB;
+    private String gameResult;
+    private String time;
     private DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
 
 
@@ -87,7 +95,6 @@ public class PositionFragment extends Fragment {
 
 
             FirebaseAuth auth = FirebaseAuth.getInstance();
-            DatabaseReference base = FirebaseDatabase.getInstance().getReference();
 
             if (auth.getUid() != null) {
 
@@ -124,7 +131,7 @@ public class PositionFragment extends Fragment {
         });
 
         //button.setOnClickListener((View clickedView) -> model.switchTrackingLocation());
-
+        model.startTrackingLocation(true);
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
         DatabaseReference base = FirebaseDatabase.getInstance().getReference();
@@ -199,19 +206,18 @@ public class PositionFragment extends Fragment {
 
                     @Override
                     public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                        Partida partida = dataSnapshot.getValue(Partida.class);
+                        partida = dataSnapshot.getValue(Partida.class);
 
                         if (partida.getUserid1().equals(auth.getUid()) && !partida.isChecked()) {
                             int res = partida.checkWin();
-                            String result;
                             if (res == 1)  {
-                                result = "VICTORIA" ;
+                                gameResult = "VICTORIA" ;
                             } else if (res == 2)  {
-                                result = "DERROTA" ;
+                                gameResult = "DERROTA" ;
                             } else {
-                                result = "EMPATE" ;
+                                gameResult = "EMPATE" ;
                             }
-                            System.out.println(result);
+                            System.out.println(gameResult);
                             partida.setChecked(true);
                             DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
 
@@ -225,10 +231,12 @@ public class PositionFragment extends Fragment {
                                 Log.i(TAG, "Aqui hay algo!!! Sera un RABO gigante? ___" + postValues);
                             }
 
-                            Toast.makeText(getContext(), result, Toast.LENGTH_LONG).show();
+                            Toast.makeText(getContext(), gameResult, Toast.LENGTH_LONG).show();
 
                             childUpdates.put("/partidas/" + dataSnapshot.getKey(), postValues);
                             mDatabase.updateChildren(childUpdates);
+                            TimeStampDataTask task = new TimeStampDataTask();
+                            task.execute();
                         }
                     }
 
@@ -252,6 +260,38 @@ public class PositionFragment extends Fragment {
 
         }
         return view;
+    }
+
+    private class TimeStampDataTask extends AsyncTask<Void, Void, String> {
+        @Override
+        protected String doInBackground(Void... voids) {
+            String result;
+            TimeZoneApi api = new TimeZoneApi();
+            result = api.getTimeZone();
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            Date date = new Date(Long.parseLong(result) * 1000L);
+            SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm");
+            dateformat.setTimeZone(TimeZone.getTimeZone("GMT"));
+            System.out.println(date);
+            time = (dateformat.format(date));
+
+            partidaDB = new PartidaDB();
+
+            partidaDB.setUser(partida.getUserid1());
+            partidaDB.setOpponent(partida.getUserid2());
+            partidaDB.setUserAction(partida.getActionid1());
+            partidaDB.setOpponentAction(partida.getActionid2());
+            partidaDB.setHora(time);
+            partidaDB.setResult(gameResult);
+
+            System.out.println("-----------INTRODUSIENDO----------");
+            model.addPartida(partidaDB);
+        }
     }
 
 }

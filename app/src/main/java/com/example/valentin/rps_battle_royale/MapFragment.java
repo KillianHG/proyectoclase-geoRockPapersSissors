@@ -45,7 +45,6 @@ import java.util.Map;
 public class MapFragment extends Fragment {
 
 
-
     public MapFragment() {
         // Required empty public constructor
 
@@ -89,7 +88,11 @@ public class MapFragment extends Fragment {
                     Log.e(null, "Can't find style. Error: ", e);
                 }
                 // Codi a executar quan el mapa s'acabi de carregar.
-                map.setMyLocationEnabled(true);
+                try {
+                    map.setMyLocationEnabled(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
                 MutableLiveData<LatLng> currentLatLng = model.getCurrentLatLng();
                 LifecycleOwner owner = getViewLifecycleOwner();
@@ -116,7 +119,7 @@ public class MapFragment extends Fragment {
 
                             float color = 90.0f;
                             Marker marker = map.addMarker(new MarkerOptions().title("JUGAR")
-                                    .snippet("Victorias: \n" + "Derrotas: " )
+                                    .snippet("Victorias: \n" + "Derrotas: ")
                                     .icon(BitmapDescriptorFactory.defaultMarker(color))
                                     .position(aux));
                             marker.setTag(dataSnapshot.getKey());
@@ -138,12 +141,12 @@ public class MapFragment extends Fragment {
                             );
 
 
-                            if (markers.containsKey(dataSnapshot.getKey())){
+                            if (markers.containsKey(dataSnapshot.getKey())) {
                                 Marker marker = markers.get(dataSnapshot.getKey());
 
                                 try {
                                     marker.setPosition(aux);
-                                }catch (Exception e) {
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 }
 
@@ -162,7 +165,7 @@ public class MapFragment extends Fragment {
                                     users[1] = enemyID;
                                     GameFragment gameFragment = new GameFragment();
 
-                                    if (!auth.getUid().equals(marker.getTag())){
+                                    if (!auth.getUid().equals(marker.getTag())) {
                                         Toast.makeText(getContext(), "FUCK YOU!", Toast.LENGTH_SHORT).show();
                                         GameFragment newGamefragment = new GameFragment();
                                         Bundle args = new Bundle();
@@ -174,7 +177,7 @@ public class MapFragment extends Fragment {
                                         fragmentTransaction.replace(R.id.selected_fragment, newGamefragment);
                                         fragmentTransaction.addToBackStack(null);
                                         fragmentTransaction.commit();
-                                        if (!auth.getUid().equals(marker.getTag())){
+                                        if (!auth.getUid().equals(marker.getTag())) {
                                             gameFragment.getUsersId(myID, enemyID);
                                         }
                                     }
